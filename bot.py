@@ -35,25 +35,13 @@ async def call_deepseek(prompt: str, user_id: int) -> str:
         return f"❌ Ошибка: {e}"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("🤖 Привет! Я ИИ-агент. Присылай текст или фото!")
+    await update.message.reply_text("🤖 Привет! Я ИИ-агент. Присылай текст!")
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.chat.send_action(action="typing")
     response = await call_deepseek(update.message.text, update.effective_user.id)
     await update.message.reply_text(response)
 
-async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.chat.send_action(action="typing")
-    photo_file = await update.message.photo[-1].get_file()
-    image_bytes = await photo_file.download_as_bytearray()
-    try:
-        image = Image.open(BytesIO(image_bytes))
-        text = pytesseract.image_to_string(image, lang='rus+eng')
-        ocr_result = f"📝 Распознанный текст:\n{text.strip()}" if text.strip() else "📸 Текст не найден"
-    except Exception as e:
-        ocr_result = f"❌ Ошибка OCR: {e}"
-    response = await call_deepseek(f"Пользователь отправил фото. Вот текст: {ocr_result}", update.effective_user.id)
-    await update.message.reply_text(response)
 
 def main():
     app = Application.builder().token(TELEGRAM_TOKEN).build()
