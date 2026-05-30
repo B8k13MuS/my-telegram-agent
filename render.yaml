@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: ai-agent-api
+    runtime: docker
+    plan: free
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_ADMIN_IDS
+        sync: false
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: LLM_MODEL
+        value: llama3-8b-8192
+      - key: EMBEDDING_MODEL
+        value: sentence-transformers/all-MiniLM-L6-v2
+      - key: EMBEDDING_DEVICE
+        value: cpu
+      - key: QDRANT_URL
+        value: http://localhost:6333
+      - key: QDRANT_COLLECTION
+        value: business_docs
+      - key: WEBHOOK_BASE_URL
+        value: https://ai-agent-api.onrender.com
+    disk:
+      name: qdrant-data
+      mountPath: /qdrant/storage
+      sizeGB: 1
